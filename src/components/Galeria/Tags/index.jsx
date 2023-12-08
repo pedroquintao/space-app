@@ -3,10 +3,9 @@ import tags from './tags.json'
 
 const ContainerTags = styled.section`
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    /* width: 758px;
-    height: 49px; */
+    gap: 64px;
+    margin-top: 56px;
 `
 
 const TagTitulo = styled.h3`
@@ -30,13 +29,19 @@ const Tag = styled.button`
         border-color: #C98CF1;
     }
 ` 
-
+const Div = styled.div`
+    display: flex;
+    gap: 24px;
+    justify-content: end;
+`
 
 const Tags = () => {
     return (
         <ContainerTags>
             <TagTitulo>Busque por Tags:</TagTitulo>
-            {tags.map(tag => <Tag key={tag.id}>{tag.titulo}</Tag>)}
+            <Div>
+                {tags.map(tag => <Tag key={tag.id}>{tag.titulo}</Tag>)}
+            </Div>
         </ContainerTags>
     )
 }
