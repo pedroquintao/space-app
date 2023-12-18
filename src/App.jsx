@@ -7,8 +7,10 @@ import bannerBackground from './assets/banner.png'
 import Galeria from "./componentes/Galeria"
 
 import fotos from './fotos.json'
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import ModalZoom from "./componentes/ModalZoom"
+import Rodape from "./componentes/Rodape"
+
 
 const FundoGradiente = styled.div`
   background: linear-gradient(174.61deg, #041833 4.16%, #04244F 48%, #154580 96.76%);
@@ -44,7 +46,6 @@ const App = () => {
         ...fotoSelecionada,
         favorita: !fotoSelecionada.favorita
       })
-      
     }
 
     setFotosDaGaleria(fotosDaGaleria.map(fotoDaGaleria => {
@@ -55,11 +56,32 @@ const App = () => {
     }))
   }
   
+  const [tagSelecionada, setTagSelecionada] = useState(0)
+  const [filtroTexto, setFiltroTexto] = useState("")
+
+  useEffect(() => {
+    const fotosFiltradas = fotos.filter(foto => {
+      const filtroPorTag = !tagSelecionada || tagSelecionada === foto.tagId
+      const filtroPorTexto = !filtroTexto || foto.titulo.toLowerCase().includes(filtroTexto.toLowerCase())
+      return filtroPorTag && filtroPorTexto;})
+      
+    console.log(fotosFiltradas)
+    setFotosDaGaleria(fotosFiltradas)
+  }, [tagSelecionada, filtroTexto])
+
+  const aoSelecionarTag = (tag) => {
+    setTagSelecionada(tag.tag)
+  }
+
+  const aoAlterarFiltro = (texto) => {
+    setFiltroTexto(texto)
+  }
+
   return (
     <FundoGradiente>
       <EstilosGlobais />
       <AppContainer>
-        <Cabecalho />
+        <Cabecalho aoAlterarFiltro={aoAlterarFiltro}/>
         <MainContainer>
           <BarraLateral />
           <ConteudoGaleria>
@@ -69,13 +91,15 @@ const App = () => {
             />
             <Galeria aoFotoSelecionada={foto => setFotoSelecionada(foto)} 
                      aoAlternarFavorito={aoAlternarFavorito}
-                     fotos={fotosDaGaleria}/>
+                     fotos={fotosDaGaleria}
+                     aoSelecionarTag={aoSelecionarTag}/>
           </ConteudoGaleria>
         </MainContainer>
       </AppContainer>
       <ModalZoom foto={fotoSelecionada}
                  aoFechar={() => setFotoSelecionada(null)}
                  aoAlternarFavorito={aoAlternarFavorito}/>
+    <Rodape />
     </FundoGradiente>
   )
 }
